@@ -106,7 +106,7 @@ func NewServer(ctx context.Context, bs *BuilderServer) *Server {
 		log.Fatalf("Failed to get external IP address: %v", err)
 		return nil
 	}
-
+  log.Printf("Got internal IP address: %s", ip)
 	// Set and return Remote.
 	s.Remote = Remote{
 		Hostname: &ip,
@@ -251,10 +251,12 @@ func (s *Server) getExternalIP(bs *BuilderServer) (string, error) {
 		log.Printf("Error refreshing instance: %+v", err)
 	}
 	for _, ni := range s.instance.NetworkInterfaces {
-		for _, ac := range ni.AccessConfigs {
-			if ac.Name == "External NAT" {
-				return ac.NatIP, nil
-			}
+		//for _, ac := range ni.AccessConfigs {
+		//	if ac.Name == "External NAT" {
+		//		return ac.NatIP, nil
+		//	}
+    if strings.HasPrefix(ni.NetworkIP, "10.") {
+      return ni.NetworkIP, nil
 		}
 	}
 	return "", errors.New("Could not get external NAT IP from list")

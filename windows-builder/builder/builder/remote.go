@@ -123,6 +123,7 @@ func (r *Remote) copyViaBucket(ctx context.Context, inputPath, outputPath string
 	}
 	object := fmt.Sprintf("windows-builder-%d", time.Now().UnixNano())
 
+  log.Printf("Writing to a bucket...")
 	gsURL, err := writeZipToBucket(
 		ctx,
 		bucket,
@@ -132,7 +133,7 @@ func (r *Remote) copyViaBucket(ctx context.Context, inputPath, outputPath string
 	if err != nil {
 		return err
 	}
-
+  log.Printf("Deploying archive to windows machine...")
 	pwrScript := fmt.Sprintf(`
 $ErrorActionPreference = "Stop"
 $ProgressPreference = 'SilentlyContinue'
